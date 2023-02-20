@@ -1,0 +1,154 @@
+<div class="row">
+    <div class="col-lg-4">
+        <div class="card">
+
+            <div class="card-body">
+                <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
+                    data-target="#exampleModal">
+                    CREER UNE PERIODE D'INVENTAIRE
+                </button>
+            </div>
+            
+
+        </div>
+    </div>
+    <div class="col-md-8">
+
+
+
+
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title">Liste période inventaire</h5>
+
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+
+                        <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
+
+                        <ng-template #libelleTp let-row let-rowIndex="rowIndex">
+                            <div class="" *ngIf="editRow !== rowIndex">{{ row?.libelle }}</div>
+                            <div *ngIf="editRow === rowIndex">
+                                <input type="text" #libelle class="form-label" [value]="row?.libelle" />
+                            </div>
+                        </ng-template>
+
+                        <ng-template #n_bordereauTp let-row let-rowIndex="rowIndex">
+                            <div class="" *ngIf="editRow !== rowIndex">{{ row?.n_bordereau }}</div>
+                            <div *ngIf="editRow === rowIndex">
+                                <input type="text" #n_bordereau class="form-label" [value]="row?.n_bordereau" />
+                            </div>
+                        </ng-template>
+
+                        <ng-template #date_debutTp let-row let-rowIndex="rowIndex">
+                            <div class="" *ngIf="editRow !== rowIndex">{{ row?.date_debut | date: "dd/MM/yyyy" }}</div>
+                            <div *ngIf="editRow === rowIndex">
+                                <input type="date" #date_debut class="form-label" [value]="row?.date_debut | date: 'yyyy-MM-dd'" />
+                            </div>
+                        </ng-template>
+                        <ng-template #date_finTp let-row let-rowIndex="rowIndex">
+                            <div class="" *ngIf="editRow !== rowIndex">{{ row?.date_fin | date: "dd/MM/yyyy" }}</div>
+                            <div *ngIf="editRow === rowIndex">
+                                <input type="date" #date_fin class="form-label" [value]="row?.date_fin | date: 'yyyy-MM-dd'" />
+                            </div>
+                        </ng-template>
+                        <ng-template #isActiveTp let-row let-rowIndex="rowIndex">
+                            <div class="" *ngIf="editRow !== rowIndex">
+                                <span class="btn badge text-bg-success" *ngIf="row?.isActive" (click)="activeOrDiseable(row, true)" > {{ "ACTIVER"}}</span>
+                                <span class="btn badge text-bg-danger" *ngIf="!row?.isActive" (click)="activeOrDiseable(row, false)" > {{ "DESACTIVER"}}</span>
+                            </div>
+                            <!-- <div *ngIf="editRow === rowIndex">
+                                <input #isActive class="form-check-input" type="checkbox" [checked]="row?.isActive">
+                            </div> -->
+                        </ng-template>
+
+                        <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+                            <div *ngIf="editRow !== rowIndex" class="btn btn-primary btn-circle"
+                                (click)="edit(rowIndex)">
+                                <span class="nc-icon nc-ruler-pencil "></span>
+                            </div>
+                            <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
+                                <span class="nc-icon nc-check-2"></span>
+
+                            </div>
+                        </ng-template>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-user">
+                        <div class="card-header">
+                            <h5 class="card-title modal-title" id="exampleModalLabel" style="display: inline;">
+                                Créer une periode d'inventaire
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <form [formGroup]="form" (ngSubmit)="sendData()">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>Libellé</label>
+                                            <input type="text" class="form-control" formControlName="libelle"
+                                                placeholder="Libellé">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="form-group">
+                                            <label>N° Bordereau</label>
+                                            <input type="number" min="0" class="form-control"
+                                                formControlName="n_bordereau" placeholder="N° Bordereau">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 pr-1">
+                                        <div class="form-group">
+                                            <label>Date de début</label>
+                                            <input type="date" class="form-control" formControlName="date_debut"
+                                                placeholder="Date de début">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 pl-1">
+                                        <div class="form-group">
+                                            <label>Date de fin</label>
+                                            <input type="date" class="form-control" formControlName="date_fin"
+                                                placeholder="Date de fin">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="update ml-auto mr-auto">
+                                        <button type="submit" class="btn btn-primary btn-round">CREER</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>

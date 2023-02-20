@@ -1,0 +1,136 @@
+<div class="row">
+    <div class="col-md-12">
+  
+      <div>
+
+        <div class="file-upload">
+  
+          <button mat-mini-fab color="primary" class="upload-btn btn btn-primary" (click)="exportexcel()">
+            Exportation en Excel
+          </button>
+  
+          <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
+            data-target="#exampleModal">
+            AJOUTER UN UTILISATEUR
+          </button>
+        </div>
+  
+      </div>
+  
+  
+  
+  
+      <div class="card">
+        <div class="card-header">
+          <h5 class="card-title">Liste Des Utilisateurs</h5>
+          <!-- <p class="card-category">Handcrafted by our friends from
+            <a href="https://nucleoapp.com/?ref=1712">NucleoApp</a>
+          </p> -->
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div  class="col-md-12">
+  
+              <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
+  
+              <ng-template #fullnameTp let-row let-rowIndex="rowIndex">
+                <div class="" *ngIf="editRow !== rowIndex">{{ row?.fullname }}</div>
+                <div *ngIf="editRow === rowIndex">
+                  <input type="text" #fullname class="form-label" [value]="row?.fullname" />
+                </div>
+              </ng-template>
+
+              <ng-template #emailTp let-row let-rowIndex="rowIndex">
+                <div class="" *ngIf="editRow !== rowIndex">{{ row?.email }}</div>
+                <div *ngIf="editRow === rowIndex">
+                  <input type="email" #email class="form-label" [value]="row?.email" />
+                </div>
+              </ng-template>
+
+              <ng-template #typeUserTp let-row let-rowIndex="rowIndex">
+                <div class="" *ngIf="editRow !== rowIndex">{{ row.typeUser }}</div>
+                <div *ngIf="editRow === rowIndex">
+                  <input type="text" #typeUser class="form-label" [value]="row?.typeUser" />
+                </div>
+              </ng-template>
+  
+  
+              <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+                <div *ngIf="editRow !== rowIndex" class="btn btn-primary btn-circle" (click)="edit(rowIndex)">
+                  <span class="nc-icon nc-ruler-pencil "></span>
+                </div>
+                <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
+                  <span class="nc-icon nc-check-2"></span>
+                  
+                </div>
+              </ng-template>
+  
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+aria-hidden="true">
+<div class="modal-dialog modal-xl" role="document">
+  <div class="modal-content">
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card card-user">
+          <div class="card-header">
+            <h5 class="card-title modal-title" id="exampleModalLabel" style="display: inline;">
+              Ajouter un utilisateur
+            </h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="form" (ngSubmit)="create()">
+              
+              <div class="row">
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Nom et Prénom (s)</label>
+                    <input type="text" class="form-control" formControlName="fullname" placeholder="Nom et Prénom (s)">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                  <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-control" formControlName="email" placeholder="Email">
+                  </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Fontion</label>
+                      <input type="text" class="form-control" formControlName="typeUser" placeholder="Fonction">
+                    </div>
+                  </div>
+              </div>
+
+
+
+              <div class="row">
+                <div class="update ml-auto mr-auto">
+                  <button type="submit" class="btn btn-primary btn-round">
+                    <span *ngIf="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    CREER
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+  </div>
+</div>
+</div>

@@ -1,0 +1,304 @@
+<div class="row">
+  <div class="col-md-12">
+
+
+
+    <div>
+
+      <div class="file-upload">
+
+        <div class="row">
+          
+        </div>
+
+
+        <button mat-mini-fab color="primary" (click)="exportexcel()" class="upload-btn btn btn-primary">
+          Exportation en Excel
+        </button>
+
+        <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
+          data-target="#exampleModal">
+          CREER UNE PERIODE D'INVENTAIRE
+        </button>
+      </div>
+
+      
+      <div class="input-group mb-3 col-md-6">
+        <div class="input-group-prepend">
+          <label class="input-group-text" for="inputGroupSelect01">
+          <span *ngIf="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+
+            Période Inventaire</label>
+        </div>
+        <select [(ngModel)]="periodeInventaireValue" class="custom-select" id="inputGroupSelect01" (change)="getAllByPeriodeInventaire(periodeInventaireValue)">
+          <option selected disabled>Choose...</option>
+          <option *ngFor="let item of periodeInventaire" [value]="item.id_periode_inventaire">
+            {{item.libelle | uppercase}}
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">Liste Des Inventaires</h5>
+
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-12">
+
+            <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
+
+            <ng-template #etatTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.etat }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #etat class="form-label" [value]="row?.etat" />
+              </div>
+            </ng-template>
+
+            <ng-template #nom_agentTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.nom_agent }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #nom_agent class="form-label" [value]="row?.nom_agent" />
+              </div>
+            </ng-template>
+
+            <ng-template #observationsTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.observations }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #observations class="form-label" [value]="row?.observations" />
+              </div>
+            </ng-template>
+
+            <ng-template #date_inventaireTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.date_inventaire | date: "dd/MM/yyyy" }}</div>
+              <!-- <div *ngIf="editRow === rowIndex">
+                <input type="date" #date_inventaire class="form-label" [value]="row?.date_inventaire" />
+              </div> -->
+            </ng-template>
+
+            <ng-template #n_inventaireTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.n_inventaire }}</div>
+              <!-- <div *ngIf="editRow === rowIndex">
+                <input type="text" #n_inventaire class="form-label" [value]="row?.codification?.n_inventaire" />
+              </div> -->
+            </ng-template>
+
+            <ng-template #code_guichetTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.code_guichet }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #code_guichet class="form-label" [value]="row?.codification?.code_guichet" />
+              </div>
+            </ng-template>
+
+            <ng-template #departementTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification.departement }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #departement class="form-label" [value]="row?.codification?.departement" />
+              </div>
+            </ng-template>
+
+            <ng-template #directionTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification.direction }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #direction class="form-label" [value]="row?.codification?.direction" />
+              </div>
+            </ng-template>
+
+            <ng-template #familleTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.famille }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #famille class="form-label" [value]="row?.codification?.famille" />
+              </div>
+            </ng-template>
+
+            <ng-template #libelle_familleTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_famille }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #libelle_famille class="form-label" [value]="row?.codification?.libelle_famille" />
+              </div>
+            </ng-template>
+
+            <ng-template #sous_libelle_familleTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.sous_libelle_famille }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #sous_libelle_famille class="form-label" [value]="row?.codification?.sous_libelle_famille" />
+              </div>
+            </ng-template>
+
+            <ng-template #niveauTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.niveau }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #niveau class="form-label" [value]="row?.codification?.niveau" />
+              </div>
+            </ng-template>
+
+            <ng-template #serviceTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.service }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #service class="form-label" [value]="row?.codification?.service" />
+              </div>
+            </ng-template>
+
+            <ng-template #sous_familleTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.sous_famille }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #sous_famille class="form-label" [value]="row?.codification?.sous_famille" />
+              </div>
+            </ng-template>
+
+            <ng-template #code_localisationTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.codeLocalisation }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #code_localisation class="form-label" [value]="row?.codification?.codeLocalisation" />
+              </div>
+            </ng-template>
+
+            <ng-template #libelle_agenceTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_agence }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #libelle_agence class="form-label" [value]="row?.codification?.libelle_agence" />
+              </div>
+            </ng-template>
+
+            <ng-template #libelle_localisationTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_localisation }}</div>
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #libelle_localisation class="form-label" [value]="row?.codification?.libelle_localisation" />
+              </div>
+            </ng-template>
+
+            <ng-template #actionTpl let-row let-rowIndex="rowIndex">
+              <div *ngIf="editRow !== rowIndex" class="btn btn-primary btn-circle" (click)="edit(rowIndex)">
+                <span class="nc-icon nc-ruler-pencil "></span>
+              </div>
+              <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
+                <span class="nc-icon nc-check-2"></span>
+                
+              </div>
+            </ng-template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-user">
+            <div class="card-header">
+              <h5 class="card-title modal-title" id="exampleModalLabel" style="display: inline;">
+                Créer une periode d'inventaire
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="form" (ngSubmit)="sendData()">
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>Libellé</label>
+                      <input type="text" class="form-control" formControlName="libelle" placeholder="Libellé">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>N° Bordereau</label>
+                      <input type="number" min="0" class="form-control" formControlName="n_bordereau" placeholder="N° Bordereau" >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6 pr-1">
+                    <div class="form-group">
+                      <label>Date de début</label>
+                      <input type="date" class="form-control" formControlName="date_debut" placeholder="Date de début">
+                    </div>
+                  </div>
+                  <div class="col-md-6 pl-1">
+                    <div class="form-group">
+                      <label>Date de fin</label>
+                      <input type="date" class="form-control"  formControlName="date_fin" placeholder="Date de fin">
+                    </div>
+                  </div>
+                </div>
+               
+                <!-- <div class="row">
+                  <div class="col-md-4 pr-1">
+                    <div class="form-group">
+                      <label>City</label>
+                      <input type="text" class="form-control" placeholder="City" value="Melbourne">
+                    </div>
+                  </div>
+                  <div class="col-md-4 px-1">
+                    <div class="form-group">
+                      <label>Country</label>
+                      <input type="text" class="form-control" placeholder="Country" value="Australia">
+                    </div>
+                  </div>
+                  <div class="col-md-4 pl-1">
+                    <div class="form-group">
+                      <label>Postal Code</label>
+                      <input type="number" class="form-control" placeholder="ZIP Code">
+                    </div>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-12">
+                    <div class="form-group">
+                      <label>About Me</label>
+                      <textarea class="form-control textarea">Oh so, your weak rhyme You doubt I'll bother, reading into it</textarea>
+                    </div>
+                  </div>
+                </div> -->
+
+                <div class="row">
+                  <div class="update ml-auto mr-auto">
+                    <button type="submit" class="btn btn-primary btn-round">CREER</button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+
+      <!-- <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div> -->
+
+
+    </div>
+  </div>
+</div>
