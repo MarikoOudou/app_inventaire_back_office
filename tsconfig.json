@@ -3,7 +3,9 @@
   "compilerOptions": {
     "downlevelIteration": true,
     "importHelpers": true,
+    "skipLibCheck": true,
     "outDir": "./dist/out-tsc",
+    "strict": false,
     "baseUrl": "src",
     "sourceMap": true,
     "declaration": false,
