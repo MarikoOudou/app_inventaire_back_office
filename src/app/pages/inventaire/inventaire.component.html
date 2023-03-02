@@ -8,7 +8,7 @@
       <div class="file-upload">
 
         <div class="row">
-          
+
         </div>
 
 
@@ -16,13 +16,13 @@
           Exportation en Excel
         </button>
 
-        <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
+        <!-- <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
           data-target="#exampleModal">
           CREER UNE PERIODE D'INVENTAIRE
-        </button>
+        </button> -->
       </div>
 
-      
+
       <div class="input-group mb-3 col-md-6">
         <div class="input-group-prepend">
           <label class="input-group-text" for="inputGroupSelect01">
@@ -32,7 +32,7 @@
         </div>
         <select [(ngModel)]="periodeInventaireValue" class="custom-select" id="inputGroupSelect01" (change)="getAllByPeriodeInventaire(periodeInventaireValue)">
           <option selected disabled>Choose...</option>
-          <option *ngFor="let item of periodeInventaire" [value]="item.id_periode_inventaire">
+          <option *ngFor="let item of periodeInventaire" [value]="item.id">
             {{item.libelle | uppercase}}
           </option>
         </select>
@@ -178,7 +178,7 @@
               </div>
               <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
                 <span class="nc-icon nc-check-2"></span>
-                
+
               </div>
             </ng-template>
           </div>
@@ -240,7 +240,7 @@
                     </div>
                   </div>
                 </div>
-               
+
                 <!-- <div class="row">
                   <div class="col-md-4 pr-1">
                     <div class="form-group">

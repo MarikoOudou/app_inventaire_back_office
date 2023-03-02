@@ -1,6 +1,8 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Codification, CodificationService, Inventaire, InventaireService, PeriodeInventaireService } from 'app/core/api/v1';
+import { InventaireService } from 'app/services/inventaire.service';
+import { PeriodeInventaireService } from 'app/services/periode-inventaire.service';
+import { Inventaire } from 'app/shared/model/inventaire';
 import { create } from 'domain';
 import { Columns, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import { Config } from 'protractor';
@@ -72,7 +74,7 @@ export class InventaireComponent implements OnInit {
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   public configuration: Config;
-  public columns: Columns[] 
+  public columns: Columns[]
 
   public data: Inventaire[]= [];
 
@@ -97,7 +99,7 @@ export class InventaireComponent implements OnInit {
   periodeInventaire: any;
   periodeInventaireValue: any;
   fileName = 'ExcelSheet.xlsx';
-  
+
 
   constructor(
     private inventaireService: InventaireService,
@@ -120,7 +122,7 @@ export class InventaireComponent implements OnInit {
     // ... etc.
     this.columns = [
       { key: 'action',              title: 'ACTIONS' ,              cellTemplate: this.actionTpl, searchEnabled: false },
-     
+
       { key: 'n_inventaire',        title: 'N° INVENTAIRE',         cellTemplate: this.n_inventaireTp},
       // { key: 'n_serie',             title: 'N° SERIE',              cellTemplate: this.n_serieTp},
       { key: 'etat',                title: 'ETAT',                  cellTemplate: this.etatTp},
@@ -146,7 +148,7 @@ export class InventaireComponent implements OnInit {
     this.init()
   }
 
-  
+
   sendData() {
     this.loader = true;
     this.form.value.isActive = true;
@@ -156,7 +158,7 @@ export class InventaireComponent implements OnInit {
     this.periodeInventaireService.createPeriodeInventaire(this.form.value).subscribe(
       {
         next: (result: any) => {
-          
+
           console.log('Data: ', result);
               Swal.fire({
                 title: 'Success',
@@ -182,7 +184,7 @@ export class InventaireComponent implements OnInit {
         }
       }
     )
- 
+
   }
 
   init() {
@@ -206,14 +208,11 @@ export class InventaireComponent implements OnInit {
 
   }
 
-  
+
   fieldFileExcel(data: Inventaire[]) {
     return data.map(
       (element) => {
         return {
-
-    
-
 
           'CODE GUICHET': element?.codification?.code_guichet,
           'FAMILLE ': element?.codification?.famille,
@@ -221,7 +220,7 @@ export class InventaireComponent implements OnInit {
           'LIBELLE FAMILLE': element?.codification?.libelle_famille,
           'SOUS LIBELLE FAMILLE': element?.codification?.sous_libelle_famille,
           'libelle agence ': element?.codification?.libelle_agence,
-          'code localisation': element?.codification?.codeLocalisation,
+          'code localisation': element?.codification?.code_localisation,
           'NIVEAU': element?.codification?.niveau,
           'libelle localisation': element?.codification?.libelle_localisation,
           'DIRECTION': element?.codification?.direction,
@@ -272,20 +271,32 @@ export class InventaireComponent implements OnInit {
   getAllInventaire () {
     this.configuration.isLoading = true;
 
-    this.inventaireService.getAll1().subscribe(
+    this.inventaireService.getAllInventaire().subscribe(
       {
         next: (result: any) => {
 
           console.log('inventaireService: ', result);
-          Swal.fire({
-            title: 'Success',
-            text: result?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
 
-          this.data = result.data;
-          this.data = this.data.sort((a, b) =>   Date.parse(b.date_inventaire)  - Date.parse( a.date_inventaire))
+if (result.status) {
+  Swal.fire({
+    title: 'Success',
+    text: result?.message || '',
+    icon: 'success',
+    confirmButtonText: 'Retour'
+  })
+
+  this.data = result.data;
+
+  this.data = this.data.sort((a, b) =>   Date.parse(b.date_inventaire)  - Date.parse( a.date_inventaire))
+} else {
+  Swal.fire({
+    title: 'Error',
+    text: result?.message || '',
+    icon: 'error',
+    confirmButtonText: 'Retour'
+  })
+}
+
           this.form.reset();
           this.loader = false;
           this.configuration.isLoading = false;
@@ -306,7 +317,7 @@ export class InventaireComponent implements OnInit {
     )
   }
 
-  
+
   getAllByPeriodeInventaire (id_periode: number) {
     console.log(id_periode)
     this.configuration.isLoading = true;
@@ -352,9 +363,9 @@ export class InventaireComponent implements OnInit {
     this.file = event.target.files[0];
 
     // console.log('data')
-    
+
     var immobilier: IMMOBILIER;
-    
+
     this.fileReader(this.file, immobilier);
   }
 
@@ -390,7 +401,7 @@ export class InventaireComponent implements OnInit {
 
   private matchingCell(worksheet: any, monTab: any, line: any) {
     monTab.value = [];
- 
+
     for (let i = 0; i < worksheet.length; i++) {
       const worksheetLine = worksheet[i];
       const updatedLine: IMMOBILIER = {
@@ -460,9 +471,9 @@ export class InventaireComponent implements OnInit {
     // resul.  libelle_agence= this.libelle_agence.nativeElement.value,
     // resul.niveau= this.niveau.nativeElement.value,
     //         resul.  libelle_localisation= this.libelle_localisation.nativeElement.value,
-    
 
-    this.inventaireService.updateInventaire(resul.id_inventaire, resul).subscribe(
+
+    this.inventaireService.updateInventaire(resul.id, resul).subscribe(
       {
         next: (data: any) => {
           this.configuration.isLoading = false;
@@ -474,7 +485,7 @@ export class InventaireComponent implements OnInit {
             icon: 'success',
             confirmButtonText: 'Retour'
           })
-          
+
         },
         error: (error) => {
           Swal.fire({
@@ -483,7 +494,7 @@ export class InventaireComponent implements OnInit {
             icon: 'error',
             confirmButtonText: 'Retour'
           })
-          
+
         }
       }
     )

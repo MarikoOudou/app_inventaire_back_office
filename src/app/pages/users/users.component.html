@@ -1,25 +1,25 @@
 <div class="row">
     <div class="col-md-12">
-  
+
       <div>
 
         <div class="file-upload">
-  
+
           <button mat-mini-fab color="primary" class="upload-btn btn btn-primary" (click)="exportexcel()">
             Exportation en Excel
           </button>
-  
+
           <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
             data-target="#exampleModal">
             AJOUTER UN UTILISATEUR
           </button>
         </div>
-  
+
       </div>
-  
-  
-  
-  
+
+
+
+
       <div class="card">
         <div class="card-header">
           <h5 class="card-title">Liste Des Utilisateurs</h5>
@@ -30,9 +30,9 @@
         <div class="card-body">
           <div class="row">
             <div  class="col-md-12">
-  
+
               <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
-  
+
               <ng-template #fullnameTp let-row let-rowIndex="rowIndex">
                 <div class="" *ngIf="editRow !== rowIndex">{{ row?.fullname }}</div>
                 <div *ngIf="editRow === rowIndex">
@@ -48,23 +48,23 @@
               </ng-template>
 
               <ng-template #typeUserTp let-row let-rowIndex="rowIndex">
-                <div class="" *ngIf="editRow !== rowIndex">{{ row.typeUser }}</div>
+                <div class="" *ngIf="editRow !== rowIndex">{{ row.type_user }}</div>
                 <div *ngIf="editRow === rowIndex">
-                  <input type="text" #typeUser class="form-label" [value]="row?.typeUser" />
+                  <input type="text" #typeUser class="form-label" [value]="row?.type_user" />
                 </div>
               </ng-template>
-  
-  
+
+
               <ng-template #actionTpl let-row let-rowIndex="rowIndex">
                 <div *ngIf="editRow !== rowIndex" class="btn btn-primary btn-circle" (click)="edit(rowIndex)">
                   <span class="nc-icon nc-ruler-pencil "></span>
                 </div>
                 <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
                   <span class="nc-icon nc-check-2"></span>
-                  
+
                 </div>
               </ng-template>
-  
+
             </div>
           </div>
         </div>
@@ -91,7 +91,7 @@ aria-hidden="true">
           </div>
           <div class="card-body">
             <form [formGroup]="form" (ngSubmit)="create()">
-              
+
               <div class="row">
                 <div class="col-md-4">
                   <div class="form-group">
@@ -108,7 +108,7 @@ aria-hidden="true">
                 <div class="col-md-4">
                     <div class="form-group">
                       <label>Fontion</label>
-                      <input type="text" class="form-control" formControlName="typeUser" placeholder="Fonction">
+                      <input type="text" class="form-control" formControlName="type_user" placeholder="Fonction">
                     </div>
                   </div>
               </div>

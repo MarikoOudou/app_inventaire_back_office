@@ -1,9 +1,10 @@
 import { Component, OnInit, TemplateRef, ViewChild,   ElementRef, } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { Codification, CodificationService } from 'app/core/api/v1';
 import { Columns, Config, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import * as xlsx from 'xlsx';
 import Swal from 'sweetalert2'
+import { Codification } from 'app/shared/model/codification';
+import { CodificationService } from 'app/services/codification.service';
 
 export interface IMMOBILIER {
   id                  ?: string,
@@ -28,7 +29,7 @@ export interface IMMOBILIER {
   styleUrls: ['./import-excel-file.component.css']
 })
 export class ImportExcelFileComponent implements OnInit {
-  
+
   @ViewChild('n_inventaireTp', { static: true }) n_inventaireTp: TemplateRef<any>;
   @ViewChild('n_inventaire') n_inventaire: ElementRef<any>;
 
@@ -71,7 +72,7 @@ export class ImportExcelFileComponent implements OnInit {
   @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
 
   public configuration: Config;
-  public columns: Columns[] 
+  public columns: Columns[]
 
   public data: Codification[]= [];
 
@@ -90,7 +91,7 @@ export class ImportExcelFileComponent implements OnInit {
     file_excel: new FormControl(''),
   });
 
-  
+
 
   constructor(
     private codificationService: CodificationService
@@ -142,9 +143,9 @@ export class ImportExcelFileComponent implements OnInit {
     this.file = event.target.files[0];
 
     // console.log('data')
-    
+
     var immobilier: Codification;
-    
+
     this.fileReader(this.file, immobilier);
   }
 
@@ -180,7 +181,7 @@ export class ImportExcelFileComponent implements OnInit {
 
   private matchingCell(worksheet: any, monTab: any, line: any) {
     monTab.value = [];
- 
+
     for (let i = 0; i < worksheet.length; i++) {
       const worksheetLine = worksheet[i];
       const updatedLine: Codification = {
@@ -191,7 +192,7 @@ export class ImportExcelFileComponent implements OnInit {
         libelle_famille: worksheetLine['LIBELLE FAMILLE'],
         sous_libelle_famille: worksheetLine['LIBELLE FAMILLE_1'],
         libelle_agence: worksheetLine['libelle agence '],
-        codeLocalisation: worksheetLine['code localisation'],
+        code_localisation: worksheetLine['code localisation'],
         niveau: worksheetLine['NIVEAU'],
         libelle_localisation: worksheetLine['libelle localisation'],
         direction: worksheetLine['DIRECTION'],
@@ -242,20 +243,31 @@ export class ImportExcelFileComponent implements OnInit {
     this.loader = true;
     console.log('Data to send : ', this.data)
 
-    this.codificationService.creates(this.data).subscribe(
+    this.codificationService.createsCodification(this.data).subscribe(
       {
         next: (result: any) => {
-          
           console.log('Data: ', result);
-              Swal.fire({
-                title: 'Success',
-                text: result?.message || '',
-                icon: 'success',
-                confirmButtonText: 'Retour'
-              })
 
-          this.data = [];
-          this.form.reset();
+          if (result.status) {
+            Swal.fire({
+              title: 'Success',
+              text: result?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
+
+            this.data = [];
+            this.form.reset();
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: result?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
+
+
           this.loader = false;
         },
         error: (result: any) => {
@@ -270,7 +282,7 @@ export class ImportExcelFileComponent implements OnInit {
         }
       }
     )
- 
+
   }
 
   edit(rowIndex: number): void {

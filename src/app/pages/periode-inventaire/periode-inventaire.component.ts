@@ -1,7 +1,7 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { PeriodeInventaire } from 'app/core/api/v1';
-import { PeriodeInventaireService } from 'app/core/api/v1/api/periodeInventaire.service';
+import { PeriodeInventaireService } from 'app/services/periode-inventaire.service';
+import { PeriodeInventaire } from 'app/shared/model/periodeInventaire';
 import { Columns, Config, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import Swal from 'sweetalert2';
 import * as xlsx from 'xlsx';
@@ -65,7 +65,7 @@ export class PeriodeInventaireComponent implements OnInit {
     // ... etc.
     this.columns = [
       { key: 'action',               title: 'ACTIONS' ,             cellTemplate: this.actionTpl, searchEnabled: false },
-     
+
       { key: 'libelle',              title: 'LIBELLE',              cellTemplate: this.libelleTp},
       { key: 'n_bordereau',          title: 'N° BORDEREAU',         cellTemplate: this.n_bordereauTp},
       { key: 'date_debut',           title: 'DATE DEBUT',           cellTemplate: this.date_debutTp},
@@ -77,7 +77,7 @@ export class PeriodeInventaireComponent implements OnInit {
     this.init()
   }
 
-    
+
   sendData() {
     this.loader = true;
     this.form.value.isActive = true;
@@ -87,7 +87,7 @@ export class PeriodeInventaireComponent implements OnInit {
     this.periodeInventaireService.createPeriodeInventaire(this.form.value).subscribe(
       {
         next: (result: any) => {
-          
+
           console.log('Data: ', result);
               Swal.fire({
                 title: 'Success',
@@ -113,7 +113,7 @@ export class PeriodeInventaireComponent implements OnInit {
         }
       }
     )
- 
+
   }
 
   init() {
@@ -128,15 +128,25 @@ export class PeriodeInventaireComponent implements OnInit {
         next: (result: any) => {
 
           console.log('periodeInventaire: ', result);
-          Swal.fire({
-            title: 'Success',
-            text: result?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
 
+          if (result.status) {
+            Swal.fire({
+              title: 'Success',
+              text: result?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
           this.data = result?.data;
-          this.form.reset();
+
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: result?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
+
           this.loader = false;
 
         },
@@ -162,7 +172,7 @@ export class PeriodeInventaireComponent implements OnInit {
   activeOrDiseable(periodeInventaire: PeriodeInventaire, isActive: boolean) {
     // console.log(periodeInventaire)
     periodeInventaire.isActive = !isActive;
-    this.periodeInventaireService.activeOrDiseable(periodeInventaire.id_periode_inventaire, periodeInventaire).subscribe(
+    this.periodeInventaireService.activeOrDiseable(periodeInventaire.id, periodeInventaire).subscribe(
       {
         next: (data: any) => {
           this.configuration.isLoading = false;
@@ -176,7 +186,7 @@ export class PeriodeInventaireComponent implements OnInit {
           });
 
           this.init()
-          
+
         },
         error: (error) => {
           this.configuration.isLoading = false;
@@ -187,7 +197,7 @@ export class PeriodeInventaireComponent implements OnInit {
             icon: 'error',
             confirmButtonText: 'Retour'
           })
-          
+
         }
       }
      )
@@ -202,7 +212,7 @@ export class PeriodeInventaireComponent implements OnInit {
     // }}))
     let resul: PeriodeInventaire;
     resul = this.data.find((obj, index) => index === this.editRow)
-      
+
      resul.libelle= this.libelle.nativeElement.value,
      resul.n_bordereau= this.n_bordereau.nativeElement.value,
      resul.date_debut =this.date_debut.nativeElement.value,
@@ -211,22 +221,34 @@ export class PeriodeInventaireComponent implements OnInit {
     this.configuration.isLoading = true;
     console.log(resul)
     this.editRow = -1;
-         
-     this.periodeInventaireService.updatePeriodeInventaire(resul.id_periode_inventaire, resul).subscribe(
+
+     this.periodeInventaireService.updatePeriodeInventaire(resul.id, resul).subscribe(
       {
         next: (data: any) => {
           this.configuration.isLoading = false;
           console.log('Data : ', data);
 
-          Swal.fire({
-            title: 'Success',
-            // text: data?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          });
+          if (data.status) {
 
-          this.init()
-          
+            Swal.fire({
+              title: 'Success',
+              // text: data?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            });
+
+            this.init()
+
+          } else {
+            Swal.fire({
+              title: 'Error',
+              // text: data?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            });
+          }
+
+
         },
         error: (error) => {
           this.configuration.isLoading = false;
@@ -237,11 +259,11 @@ export class PeriodeInventaireComponent implements OnInit {
             icon: 'error',
             confirmButtonText: 'Retour'
           })
-          
+
         }
       }
      )
-   
+
   }
 
 }

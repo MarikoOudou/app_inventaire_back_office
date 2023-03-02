@@ -4,5 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  url_api: "http://127.0.0.1:8080/api/"
+  //http://gest-imm.ci/laravel/public/api/users
+  // url_api: "https://gest-imm.ci/laravel/public/api/"
 };

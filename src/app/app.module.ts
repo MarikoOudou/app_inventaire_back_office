@@ -13,7 +13,6 @@ import { AppRoutes } from './app.routing';
 
 import { AdminLayoutComponent } from './layouts/admin-layout/admin-layout.component';
 import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
-import { ApiModule } from "./core/api/v1";
 import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
 import { UsersComponent } from './pages/users/users.component';
@@ -27,12 +26,11 @@ import { UsersComponent } from './pages/users/users.component';
   imports: [
     BrowserAnimationsModule,
     RouterModule.forRoot(AppRoutes,{
-      useHash: true
+      useHash: false
     }),
     SidebarModule,
     NavbarModule,
     SweetAlert2Module,
-    ApiModule,
     ToastrModule.forRoot(),
     ReactiveFormsModule,
     FooterModule,

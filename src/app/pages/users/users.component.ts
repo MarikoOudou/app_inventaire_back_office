@@ -3,7 +3,8 @@ import { FormGroup, FormControl } from '@angular/forms';
 import { Columns, Config, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import * as xlsx from 'xlsx';
 import Swal from 'sweetalert2'
-import { Users, UsersService } from 'app/core/api/v1';
+import { Users } from 'app/shared/model/users';
+import { UserService } from 'app/services/user.service';
 
 @Component({
   templateUrl: './users.component.html',
@@ -30,7 +31,7 @@ export class UsersComponent implements OnInit {
 
   form: FormGroup = new FormGroup({
     fullname: new FormControl(''),
-    typeUser: new FormControl(''),
+    type_user: new FormControl(''),
     email: new FormControl(''),
   });
   loader: boolean = false;
@@ -38,7 +39,7 @@ export class UsersComponent implements OnInit {
   editRow: number;
 
   constructor(
-    private usersService: UsersService
+    private usersService: UserService
   ) { }
 
   ngOnInit(): void {
@@ -58,7 +59,7 @@ export class UsersComponent implements OnInit {
       { key: 'action', title: 'Actions', cellTemplate: this.actionTpl, searchEnabled: false },
       { key: 'fullname', title: 'NOM ET PRENOM (S)', cellTemplate: this.fullnameTp },
       { key: 'email', title: 'EMAIL', cellTemplate: this.emailTp },
-      { key: 'typeUser', title: 'FONCTION', cellTemplate: this.typeUserTp },
+      { key: 'type_user', title: 'FONCTION', cellTemplate: this.typeUserTp },
     ];
     this.getAllUsers()
   }
@@ -77,10 +78,16 @@ export class UsersComponent implements OnInit {
 
   }
 
-  
+
   fieldFileExcel(data: Users[]) {
-    return data
-    
+    return data.map((element) => {
+      return {
+        'NOM & PRENOM (S)': element.fullname,
+        'EMAIL': element.email,
+        'FONCTION': element.type_user
+      }
+    })
+
     // .map(
     //   (element) => {
     //     return {
@@ -150,19 +157,30 @@ export class UsersComponent implements OnInit {
   getAllUsers() {
     this.configuration.isLoading = true;
 
-    this.usersService.getAll().subscribe(
+    this.usersService.getAllUser().subscribe(
       {
         next: (result: any) => {
 
           console.log('Data: ', result);
-          Swal.fire({
-            title: 'Success',
-            text: result?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
 
-          this.data = result;
+          if (result.status) {
+            Swal.fire({
+              title: 'Success',
+              text: result?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
+
+            this.data = result.data;
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: result?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
+
           this.form.reset();
           this.loader = false;
           this.configuration.isLoading = false;
@@ -186,7 +204,7 @@ export class UsersComponent implements OnInit {
   edit(rowIndex: number): void {
     this.editRow = rowIndex;
   }
-  
+
   update(): void {
     // this.data = [
     //   ...this.data.map((obj, index) => {
@@ -215,7 +233,7 @@ export class UsersComponent implements OnInit {
 
     resul.fullname= this.fullname.nativeElement.value
     resul.email= this.email.nativeElement.value
-    resul.typeUser= this.typeUser.nativeElement.value
+    resul.type_user= this.typeUser.nativeElement.value
     // resul.  famille= this.famille.nativeElement.value,
     // resul.  libelle_famille= this.libelle_famille.nativeElement.value,
     // resul.  sous_libelle_famille= this.sous_libelle_famille.nativeElement.value,
@@ -225,9 +243,9 @@ export class UsersComponent implements OnInit {
     // resul.  libelle_agence= this.libelle_agence.nativeElement.value,
     // resul.niveau= this.niveau.nativeElement.value,
     //         resul.  libelle_localisation= this.libelle_localisation.nativeElement.value,
-    
 
-    this.usersService.update(resul.userId, resul).subscribe(
+console.table(resul)
+    this.usersService.update(resul.id, resul).subscribe(
       {
         next: (data: any) => {
           this.configuration.isLoading = false;
@@ -239,7 +257,7 @@ export class UsersComponent implements OnInit {
             icon: 'success',
             confirmButtonText: 'Retour'
           })
-          
+
         },
         error: (error) => {
           Swal.fire({
@@ -248,7 +266,7 @@ export class UsersComponent implements OnInit {
             icon: 'error',
             confirmButtonText: 'Retour'
           })
-          
+
         }
       }
     )

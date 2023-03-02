@@ -4,8 +4,9 @@ import { Columns, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import { Config } from 'protractor';
 import { IMMOBILIER } from '../import-excel-file/import-excel-file.component';
 import * as xlsx from 'xlsx';
-import { Codification, CodificationService } from 'app/core/api/v1';
 import Swal from 'sweetalert2'
+import { CodificationService } from 'app/services/codification.service';
+import { Codification } from 'app/shared/model/codification';
 
 
 @Component({
@@ -86,7 +87,7 @@ export class ListMeubleComponent implements OnInit {
     niveau: new FormControl(''),
     service: new FormControl(''),
     sous_famille: new FormControl(''),
-    codeLocalisation: new FormControl(''),
+    code_localisation: new FormControl(''),
     libelle_agence: new FormControl(''),
     libelle_localisation: new FormControl('')
   });
@@ -123,7 +124,7 @@ export class ListMeubleComponent implements OnInit {
       { key: 'niveau', title: 'NIVEAU', cellTemplate: this.niveauTp },
       { key: 'service', title: 'SERVICE', cellTemplate: this.serviceTp },
       { key: 'sous_famille', title: 'SOUS FAMILLE', cellTemplate: this.sous_familleTp },
-      { key: 'codeLocalisation', title: 'code localisation', cellTemplate: this.code_localisationTp },
+      { key: 'code_localisation', title: 'code localisation', cellTemplate: this.code_localisationTp },
       { key: 'libelle_agence', title: 'libelle agence ', cellTemplate: this.libelle_agenceTp },
       { key: 'libelle_localisation', title: 'libelle localisation', cellTemplate: this.libelle_localisationTp },
     ];
@@ -149,7 +150,7 @@ export class ListMeubleComponent implements OnInit {
 
   }
 
-  
+
   fieldFileExcel(data: Codification[]) {
     return data.map(
       (element) => {
@@ -160,7 +161,7 @@ export class ListMeubleComponent implements OnInit {
           'LIBELLE FAMILLE': element.libelle_famille,
           'LIBELLE FAMILLE_1': element.sous_libelle_famille,
           'libelle agence ': element.libelle_agence,
-          'code localisation': element.codeLocalisation,
+          'code localisation': element.code_localisation,
           'NIVEAU': element.niveau,
           'libelle localisation': element.libelle_localisation,
           'DIRECTION': element.direction,
@@ -231,7 +232,7 @@ export class ListMeubleComponent implements OnInit {
             confirmButtonText: 'Retour'
           })
 
-          this.data = result;
+          this.data = result.data;
           this.form.reset();
           this.loader = false;
           this.configuration.isLoading = false;
@@ -308,7 +309,7 @@ export class ListMeubleComponent implements OnInit {
         libelle_famille: worksheetLine['LIBELLE FAMILLE'],
         sous_libelle_famille: worksheetLine['LIBELLE FAMILLE_1'],
         libelle_agence: worksheetLine['libelle agence '],
-        codeLocalisation: worksheetLine['code localisation'],
+        code_localisation: worksheetLine['code localisation'],
         niveau: worksheetLine['NIVEAU'],
         libelle_localisation: worksheetLine['libelle localisation'],
         direction: worksheetLine['DIRECTION'],
@@ -350,7 +351,7 @@ export class ListMeubleComponent implements OnInit {
     //         famille: this.famille.nativeElement.value,
     //         libelle_famille: this.libelle_famille.nativeElement.value,
     //         sous_libelle_famille: this.sous_libelle_famille.nativeElement.value,
-    //         codeLocalisation: this.code_localisation.nativeElement.value,
+    //         code_localisation: this.code_localisation.nativeElement.value,
     //         direction: this.direction.nativeElement.value,
     //         departement: this.departement.nativeElement.value,
     //         libelle_agence: this.libelle_agence.nativeElement.value,
@@ -371,7 +372,7 @@ export class ListMeubleComponent implements OnInit {
     resul.famille= this.famille.nativeElement.value
     resul.libelle_famille= this.libelle_famille.nativeElement.value
     resul.sous_libelle_famille= this.sous_libelle_famille.nativeElement.value
-    resul.codeLocalisation= this.code_localisation.nativeElement.value
+    resul.code_localisation= this.code_localisation.nativeElement.value
     resul.direction= this.direction.nativeElement.value
     resul.departement= this.departement.nativeElement.value
     resul.libelle_agence= this.libelle_agence.nativeElement.value
@@ -383,6 +384,8 @@ export class ListMeubleComponent implements OnInit {
 
 
     this.configuration.isLoading = true;
+
+    console.table(resul)
 
     this.codificationService.updateCodification(resul.id_codification, resul).subscribe(
       {
@@ -396,16 +399,17 @@ export class ListMeubleComponent implements OnInit {
             icon: 'success',
             confirmButtonText: 'Retour'
           })
-          
+
         },
         error: (error) => {
+          console.log(error)
           Swal.fire({
             title: 'Erreur',
             text: error?.message || '',
             icon: 'error',
             confirmButtonText: 'Retour'
           })
-          
+
         }
       }
     )
