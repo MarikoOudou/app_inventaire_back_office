@@ -1,8 +1,7 @@
 import { Component, ElementRef, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { Columns, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import { Config } from 'protractor';
-import { IMMOBILIER } from '../import-excel-file/import-excel-file.component';
 import * as xlsx from 'xlsx';
 import Swal from 'sweetalert2'
 import { CodificationService } from 'app/services/codification.service';
@@ -17,68 +16,24 @@ import { Codification } from 'app/shared/model/codification';
 export class ListMeubleComponent implements OnInit {
 
 
-  @ViewChild('n_inventaireTp', { static: true }) n_inventaireTp: TemplateRef<any>;
-  @ViewChild('n_inventaire') n_inventaire: ElementRef<any>;
 
-  @ViewChild('code_guichetTp', { static: true }) code_guichetTp: TemplateRef<any>;
-  @ViewChild('code_guichet') code_guichet: ElementRef<any>;
+  // public configuration: Config;
+  // public columns: Columns[]
 
-  @ViewChild('departementTp', { static: true }) departementTp: TemplateRef<any>;
-  @ViewChild('departement') departement: ElementRef<any>;
-
-  @ViewChild('directionTp', { static: true }) directionTp: TemplateRef<any>;
-  @ViewChild('direction') direction: ElementRef<any>;
-
-  @ViewChild('familleTp', { static: true }) familleTp: TemplateRef<any>;
-  @ViewChild('famille') famille: ElementRef<any>;
-
-  @ViewChild('libelle_familleTp', { static: true }) libelle_familleTp: TemplateRef<any>;
-  @ViewChild('libelle_famille') libelle_famille: ElementRef<any>;
-
-  @ViewChild('sous_libelle_familleTp', { static: true }) sous_libelle_familleTp: TemplateRef<any>;
-  @ViewChild('sous_libelle_famille') sous_libelle_famille: ElementRef<any>;
-
-  @ViewChild('niveauTp', { static: true }) niveauTp: TemplateRef<any>;
-  @ViewChild('niveau') niveau: ElementRef<any>;
-
-  @ViewChild('serviceTp', { static: true }) serviceTp: TemplateRef<any>;
-  @ViewChild('service') service: ElementRef<any>;
-
-  @ViewChild('sous_familleTp', { static: true }) sous_familleTp: TemplateRef<any>;
-  @ViewChild('sous_famille') sous_famille: ElementRef<any>;
-
-  @ViewChild('code_localisationTp', { static: true }) code_localisationTp: TemplateRef<any>;
-  @ViewChild('code_localisation') code_localisation: ElementRef<any>;
-
-  @ViewChild('libelle_agenceTp', { static: true }) libelle_agenceTp: TemplateRef<any>;
-  @ViewChild('libelle_agence') libelle_agence: ElementRef<any>;
-
-  @ViewChild('libelle_localisationTp', { static: true }) libelle_localisationTp: TemplateRef<any>;
-  @ViewChild('libelle_localisation') libelle_localisation: ElementRef<any>;
-
-  @ViewChild('n_serieTp', { static: true }) n_serieTp: TemplateRef<any>;
-  @ViewChild('n_serie') n_serie: ElementRef<any>;
-
-  @ViewChild('actionTpl', { static: true }) actionTpl: TemplateRef<any>;
-
-  public configuration: Config;
-  public columns: Columns[]
-
-  public data: Codification[] = [];
+  public data: any[] = [];
 
   file: any;
   arrayBuffer: any | ArrayBuffer;
   worksheet: any[];
   editRow: number;
-  phone: any;
-  age: any;
-  company: any;
-  name: any;
+
 
   form: FormGroup = new FormGroup({
     id_codification: new FormControl(0),
+    libelle_complementaire: new FormControl('', [Validators.required]),
+    libelle_immo: new FormControl('', [Validators.required]),
     code_guichet: new FormControl(''),
-    n_inventaire: new FormControl(''),
+    n_inventaire: new FormControl('', [Validators.required]),
     departement: new FormControl(''),
     direction: new FormControl(''),
     famille: new FormControl(''),
@@ -87,9 +42,9 @@ export class ListMeubleComponent implements OnInit {
     niveau: new FormControl(''),
     service: new FormControl(''),
     sous_famille: new FormControl(''),
-    code_localisation: new FormControl(''),
+    code_localisation: new FormControl('', [Validators.required]),
     libelle_agence: new FormControl(''),
-    libelle_localisation: new FormControl('')
+    libelle_localisation: new FormControl('', [Validators.required])
   });
   loader: boolean = false;
   fileName = 'ExcelSheet.xlsx';
@@ -100,34 +55,34 @@ export class ListMeubleComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.configuration = { ...DefaultConfig };
-    this.configuration.horizontalScroll = true;
-    this.configuration.tableLayout = {
-      style: STYLE.TINY,
-      theme: THEME.LIGHT,
-      borderless: true,
-      hover: true,
-      striped: false
-    }
+    // this.configuration = { ...DefaultConfig };
+    // this.configuration.horizontalScroll = true;
+    // this.configuration.tableLayout = {
+    //   style: STYLE.TINY,
+    //   theme: THEME.LIGHT,
+    //   borderless: true,
+    //   hover: true,
+    //   striped: false
+    // }
 
-    this.configuration.searchEnabled = true;
-    // ... etc.
-    this.columns = [
-      { key: 'action', title: 'Actions', cellTemplate: this.actionTpl, searchEnabled: false },
-      { key: 'n_inventaire', title: 'N° INVENTAIRE', cellTemplate: this.n_inventaireTp },
-      { key: 'code_guichet', title: 'CODE GUICHET', cellTemplate: this.code_guichetTp },
-      { key: 'departement', title: 'DEPARTEMENT', cellTemplate: this.departementTp },
-      { key: 'direction', title: 'DIRECTION', cellTemplate: this.directionTp },
-      { key: 'famille', title: 'FAMILLE', cellTemplate: this.familleTp },
-      { key: 'libelle_famille', title: 'LIBELLE FAMILLE', cellTemplate: this.libelle_familleTp },
-      { key: 'sous_libelle_famille', title: 'SOUS LIBELLE FAMILLE', cellTemplate: this.sous_libelle_familleTp },
-      { key: 'niveau', title: 'NIVEAU', cellTemplate: this.niveauTp },
-      { key: 'service', title: 'SERVICE', cellTemplate: this.serviceTp },
-      { key: 'sous_famille', title: 'SOUS FAMILLE', cellTemplate: this.sous_familleTp },
-      { key: 'code_localisation', title: 'code localisation', cellTemplate: this.code_localisationTp },
-      { key: 'libelle_agence', title: 'libelle agence ', cellTemplate: this.libelle_agenceTp },
-      { key: 'libelle_localisation', title: 'libelle localisation', cellTemplate: this.libelle_localisationTp },
-    ];
+    // this.configuration.searchEnabled = true;
+    // // ... etc.
+    // this.columns = [
+    //   { key: 'action', title: 'Actions', cellTemplate: this.actionTpl, searchEnabled: false },
+    //   { key: 'n_inventaire', title: 'N° INVENTAIRE', cellTemplate: this.n_inventaireTp },
+    //   { key: 'code_guichet', title: 'CODE GUICHET', cellTemplate: this.code_guichetTp },
+    //   { key: 'departement', title: 'DEPARTEMENT', cellTemplate: this.departementTp },
+    //   { key: 'direction', title: 'DIRECTION', cellTemplate: this.directionTp },
+    //   { key: 'famille', title: 'FAMILLE', cellTemplate: this.familleTp },
+    //   { key: 'libelle_famille', title: 'LIBELLE FAMILLE', cellTemplate: this.libelle_familleTp },
+    //   { key: 'sous_libelle_famille', title: 'SOUS LIBELLE FAMILLE', cellTemplate: this.sous_libelle_familleTp },
+    //   { key: 'niveau', title: 'NIVEAU', cellTemplate: this.niveauTp },
+    //   { key: 'service', title: 'SERVICE', cellTemplate: this.serviceTp },
+    //   { key: 'sous_famille', title: 'SOUS FAMILLE', cellTemplate: this.sous_familleTp },
+    //   { key: 'code_localisation', title: 'code localisation', cellTemplate: this.code_localisationTp },
+    //   { key: 'libelle_agence', title: 'libelle agence ', cellTemplate: this.libelle_agenceTp },
+    //   { key: 'libelle_localisation', title: 'libelle localisation', cellTemplate: this.libelle_localisationTp },
+    // ];
     this.init()
 
   }
@@ -137,6 +92,10 @@ export class ListMeubleComponent implements OnInit {
   }
 
   exportexcel(): void {
+
+    if (this.data.length == 0) {
+      return;
+    }
     /* pass here the table id */
     // let element = document.getElementById('excel-table');
     const ws: xlsx.WorkSheet = xlsx.utils.json_to_sheet(this.fieldFileExcel(this.data));
@@ -151,19 +110,23 @@ export class ListMeubleComponent implements OnInit {
   }
 
 
-  fieldFileExcel(data: Codification[]) {
+  fieldFileExcel(data: any[]) {
     return data.map(
       (element) => {
         return {
+          'N° INVENTAIRE'                 : element?.n_inventaire,
+          'LIBELLE IMMO'                  : element?.libelle_immo,
+          'LIBELLE COMPLEMENTAIRE'        : element?.libelle_complementaire,
+          'LIBELLE LOCALISATION'          : element?.libelle_localisation,
+          'CODE LOCALISATION'             : element?.code_localisation,
+
           'CODE GUICHET': element.code_guichet,
-          'FAMILLE ': element.famille,
+          'FAMILLE': element.famille,
           'SOUS FAMILLE': element.sous_famille,
           'LIBELLE FAMILLE': element.libelle_famille,
           'LIBELLE FAMILLE_1': element.sous_libelle_famille,
-          'libelle agence ': element.libelle_agence,
-          'code localisation': element.code_localisation,
+          'LIBELLE AGENCE': element.libelle_agence,
           'NIVEAU': element.niveau,
-          'libelle localisation': element.libelle_localisation,
           'DIRECTION': element.direction,
           'DEPARTEMENT': element.departement,
           'SERVICE': element.service
@@ -218,7 +181,7 @@ export class ListMeubleComponent implements OnInit {
   }
 
   getAllCodification() {
-    this.configuration.isLoading = true;
+    // this.configuration.isLoading = true;
 
     this.codificationService.getAllCodification().subscribe(
       {
@@ -233,14 +196,16 @@ export class ListMeubleComponent implements OnInit {
           })
 
           this.data = result.data;
+          this.data = this.data.sort((a, b) => Date.parse(b.updated_at) - Date.parse(a.updated_at))
+
           this.form.reset();
           this.loader = false;
-          this.configuration.isLoading = false;
+          // this.configuration.isLoading = false;
 
         },
         error: (result: any) => {
           this.loader = false;
-          this.configuration.isLoading = false;
+          // this.configuration.isLoading = false;
           console.error("ERROR : ", result)
           Swal.fire({
             title: 'Error',
@@ -261,7 +226,7 @@ export class ListMeubleComponent implements OnInit {
 
     // console.log('data')
 
-    var immobilier: IMMOBILIER;
+    var immobilier: any;
 
     this.fileReader(this.file, immobilier);
   }
@@ -301,7 +266,7 @@ export class ListMeubleComponent implements OnInit {
 
     for (let i = 0; i < worksheet.length; i++) {
       const worksheetLine = worksheet[i];
-      const updatedLine: Codification = {
+      const updatedLine: any = {
         code_guichet: worksheetLine['CODE GUICHET'],
         famille: worksheetLine['FAMILLE '],
         n_inventaire: null,
@@ -327,78 +292,43 @@ export class ListMeubleComponent implements OnInit {
 
   }
 
-  sendData() {
-    console.log('Data to send : ', this.data)
-    this.data = [];
-    this.form.reset()
-  }
-
   edit(rowIndex: number): void {
     this.editRow = rowIndex;
   }
 
-  update(): void {
+  eventLister(data: any) {
+    console.log(data)
+    this.update(data)
+  }
 
-    let resul: Codification = this.data.find((obj, index) => index === this.editRow);
-    // this.data = [
-    //   ...this.data.map((obj, index) => {
-    //     if (index === this.editRow) {
-    //       return {
-    //         code_guichet: this.code_guichet.nativeElement.value,
-    //         service: this.service.nativeElement.value,
-    //         n_inventaire: null,
-    //         sous_famille: this.sous_famille.nativeElement.value,
-    //         famille: this.famille.nativeElement.value,
-    //         libelle_famille: this.libelle_famille.nativeElement.value,
-    //         sous_libelle_famille: this.sous_libelle_famille.nativeElement.value,
-    //         code_localisation: this.code_localisation.nativeElement.value,
-    //         direction: this.direction.nativeElement.value,
-    //         departement: this.departement.nativeElement.value,
-    //         libelle_agence: this.libelle_agence.nativeElement.value,
-    //         niveau: this.niveau.nativeElement.value,
-    //         libelle_localisation: this.libelle_localisation.nativeElement.value,
-    //         n_serie: null
-    //       } as Codification;
-    //     }
-    //     return obj;
-    //   }),
-    // ] as Codification[];
+  update(resul: any): void {
 
-
-    resul.code_guichet = this.code_guichet.nativeElement.value;
-    resul.service= this.service.nativeElement.value
-    resul.n_inventaire= this.n_inventaire.nativeElement.value
-    resul.sous_famille= this.sous_famille.nativeElement.value
-    resul.famille= this.famille.nativeElement.value
-    resul.libelle_famille= this.libelle_famille.nativeElement.value
-    resul.sous_libelle_famille= this.sous_libelle_famille.nativeElement.value
-    resul.code_localisation= this.code_localisation.nativeElement.value
-    resul.direction= this.direction.nativeElement.value
-    resul.departement= this.departement.nativeElement.value
-    resul.libelle_agence= this.libelle_agence.nativeElement.value
-    resul.niveau= this.niveau.nativeElement.value
-    resul.libelle_localisation= this.libelle_localisation.nativeElement.value
-    resul.n_serie= this.n_serie?.nativeElement?.value || null
-
-    this.editRow = -1;
-
-
-    this.configuration.isLoading = true;
-
-    console.table(resul)
+    Swal.showLoading()
 
     this.codificationService.updateCodification(resul.id_codification, resul).subscribe(
       {
         next: (data: any) => {
-          this.configuration.isLoading = false;
           console.log('Data : ', data);
 
-          Swal.fire({
-            title: 'Success',
-            // text: data?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
+          if (data.status) {
+
+            Swal.fire({
+              title: 'Success',
+              text: data?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
+            this.init()
+          } else {
+
+            Swal.fire({
+              title: 'Erreur',
+              text: data?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
+
 
         },
         error: (error) => {

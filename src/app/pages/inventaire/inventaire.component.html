@@ -31,8 +31,8 @@
             Période Inventaire</label>
         </div>
         <select [(ngModel)]="periodeInventaireValue" class="custom-select" id="inputGroupSelect01" (change)="getAllByPeriodeInventaire(periodeInventaireValue)">
-          <option selected disabled>Choose...</option>
-          <option *ngFor="let item of periodeInventaire" [value]="item.id">
+          <option disabled selected>Choose...</option>
+          <option *ngFor="let item of periodeInventaire" [value]="item.id" >
             {{item.libelle | uppercase}}
           </option>
         </select>
@@ -76,16 +76,16 @@
 
             <ng-template #date_inventaireTp let-row let-rowIndex="rowIndex">
               <div class="" *ngIf="editRow !== rowIndex">{{ row?.date_inventaire | date: "dd/MM/yyyy" }}</div>
-              <!-- <div *ngIf="editRow === rowIndex">
-                <input type="date" #date_inventaire class="form-label" [value]="row?.date_inventaire" />
-              </div> -->
+              <div *ngIf="editRow === rowIndex">
+                <input type="date" #date_inventaire class="form-label" [value]="row?.date_inventaire | date: 'yyyy-MM-dd'" disabled/>
+              </div>
             </ng-template>
 
             <ng-template #n_inventaireTp let-row let-rowIndex="rowIndex">
               <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.n_inventaire }}</div>
-              <!-- <div *ngIf="editRow === rowIndex">
-                <input type="text" #n_inventaire class="form-label" [value]="row?.codification?.n_inventaire" />
-              </div> -->
+              <div *ngIf="editRow === rowIndex">
+                <input type="text" #n_inventaire class="form-label" [value]="row?.codification?.n_inventaire" disabled/>
+              </div>
             </ng-template>
 
             <ng-template #code_guichetTp let-row let-rowIndex="rowIndex">
@@ -130,17 +130,17 @@
               </div>
             </ng-template>
 
-            <ng-template #niveauTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.niveau }}</div>
+            <ng-template #libelle_immoTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_immo }}</div>
               <div *ngIf="editRow === rowIndex">
-                <input type="text" #niveau class="form-label" [value]="row?.codification?.niveau" />
+                <input type="text" #libelle_immo class="form-label" [value]="row?.codification?.libelle_immo" disabled/>
               </div>
             </ng-template>
 
-            <ng-template #serviceTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.service }}</div>
+            <ng-template #libelle_complementaireTp let-row let-rowIndex="rowIndex">
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_complementaire }}</div>
               <div *ngIf="editRow === rowIndex">
-                <input type="text" #service class="form-label" [value]="row?.codification?.service" />
+                <input type="text" #libelle_complementaire class="form-label" [value]="row?.codification?.libelle_complementaire" disabled/>
               </div>
             </ng-template>
 
@@ -152,9 +152,9 @@
             </ng-template>
 
             <ng-template #code_localisationTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.codeLocalisation }}</div>
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.code_localisation }}</div>
               <div *ngIf="editRow === rowIndex">
-                <input type="text" #code_localisation class="form-label" [value]="row?.codification?.codeLocalisation" />
+                <input type="text" #code_localisation class="form-label" [value]="row?.code_localisation" />
               </div>
             </ng-template>
 
@@ -166,9 +166,9 @@
             </ng-template>
 
             <ng-template #libelle_localisationTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row?.codification?.libelle_localisation }}</div>
+              <div class="" *ngIf="editRow !== rowIndex">{{ row?.libelle_localisation }}</div>
               <div *ngIf="editRow === rowIndex">
-                <input type="text" #libelle_localisation class="form-label" [value]="row?.codification?.libelle_localisation" />
+                <input type="text" #libelle_localisation class="form-label" [value]="row?.libelle_localisation" />
               </div>
             </ng-template>
 

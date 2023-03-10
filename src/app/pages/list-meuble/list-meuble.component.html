@@ -1,40 +1,44 @@
 <div class="row">
-    <div class="col-md-12">
+  <div class="col-md-12">
 
-      <div>
+    <div>
 
-        <div class="file-upload">
-          <button mat-mini-fab color="secondary" class="btn btn-success"  routerLink="importation">
-            IMPORTATION EN EXCEL
-          </button>
-          <button mat-mini-fab color="primary" class="upload-btn btn btn-primary" (click)="exportexcel()">
-            Exportation en Excel
-          </button>
+      <div class="file-upload">
+        <button mat-mini-fab color="secondary" class="btn btn-success" routerLink="importation">
+          IMPORTATION EN EXCEL
+        </button>
+        <button mat-mini-fab color="primary" class="upload-btn btn btn-primary" (click)="exportexcel()">
+          Exportation en Excel
+        </button>
 
-          <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
-            data-target="#exampleModal">
-            AJOUTER UN IMMOBILIER
-          </button>
+        <button mat-mini-fab color="secondary" class="upload-btn btn btn-secondary" data-toggle="modal"
+          data-target="#exampleModal">
+          AJOUTER UN IMMOBILIER
+        </button>
 
 
-
-        </div>
 
       </div>
 
+    </div>
 
 
 
-      <div class="card">
-        <div class="card-header">
-          <h5 class="card-title">Liste Des Meubles</h5>
-          <!-- <p class="card-category">Handcrafted by our friends from
+
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title">
+          Liste des immobilisations
+        </h5>
+        <!-- <p class="card-category">Handcrafted by our friends from
             <a href="https://nucleoapp.com/?ref=1712">NucleoApp</a>
           </p> -->
-        </div>
-        <div class="card-body">
-          <div class="row">
-            <div  class="col-md-12">
+      </div>
+      <div class="card-body">
+        <div class="row">
+          <table-custom [data]="data" (updateData)="eventLister($event)"></table-custom>
+
+          <!-- <div  class="col-md-12">
 
               <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
 
@@ -139,138 +143,162 @@
                 </div>
               </ng-template>
 
+            </div> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-content">
+
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card card-user">
+            <div class="card-header">
+              <h5 class="card-title modal-title" id="exampleModalLabel" style="display: inline;">
+                Ajouter un immobilier
+              </h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="card-body">
+              <form [formGroup]="form" (ngSubmit)="create()">
+
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>N° inventaire*</label>
+                      <input type="text" class="form-control" formControlName="n_inventaire"
+                        placeholder="N° inventaire">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>libelle immo*</label>
+                      <input type="text" class="form-control" formControlName="libelle_immo"
+                        placeholder="libelle immo">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>libelle complementaire*</label>
+                      <input type="text" class="form-control" formControlName="libelle_complementaire"
+                        placeholder="libelle complementaire">
+                    </div>
+                  </div>
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Direction</label>
+                      <input type="text" class="form-control" formControlName="direction" placeholder="Direction">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Département</label>
+                      <input type="text" class="form-control" formControlName="departement" placeholder="Département">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Service</label>
+                      <input type="text" class="form-control" formControlName="service" placeholder="Service">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Libellé Localisation*</label>
+                      <input type="text" class="form-control" formControlName="libelle_localisation"
+                        placeholder="Libellé Localisation">
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Code Localisation*</label>
+                      <input type="text" class="form-control" formControlName="code_localisation"
+                        placeholder="Code Localisation">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <!-- <div class="col-md-6">
+                    <div class="form-group">
+                      <label>Code Guichet</label>
+                      <input type="text" class="form-control" formControlName="code_guichet" placeholder="Code Guichet">
+                    </div>
+                  </div> -->
+
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Libelle Famille</label>
+                      <input type="text" class="form-control" formControlName="libelle_famille"
+                        placeholder="Libelle Famille">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Sous Libelle Famille</label>
+                      <input type="text" class="form-control" formControlName="sous_libelle_famille"
+                        placeholder="Sous Libelle Famille">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Famille</label>
+                      <input type="text" class="form-control" formControlName="famille" placeholder="Famille">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Sous Famille</label>
+                      <input type="text" class="form-control" formControlName="sous_famille" placeholder="Sous Famille">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Libellé Agence</label>
+                      <input type="text" class="form-control" formControlName="libelle_agence"
+                        placeholder="Libellé Agence">
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-group">
+                      <label>Niveau</label>
+                      <input type="text" class="form-control" formControlName="niveau" placeholder="Niveau">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="update ml-auto mr-auto">
+                    <button type="submit" class="btn btn-primary btn-round" [disabled]="!form.valid">
+                      <span *ngIf="loader" class="spinner-border spinner-border-sm" role="status"
+                        aria-hidden="true"></span>
+                      CREER
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
       </div>
+
+
+
     </div>
   </div>
-
-  <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-aria-hidden="true">
-<div class="modal-dialog modal-xl" role="document">
-  <div class="modal-content">
-
-    <div class="row">
-      <div class="col-md-12">
-        <div class="card card-user">
-          <div class="card-header">
-            <h5 class="card-title modal-title" id="exampleModalLabel" style="display: inline;">
-              Ajouter un immobilier
-            </h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="form" (ngSubmit)="create()">
-
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>N° inventaire</label>
-                    <input type="text" class="form-control" formControlName="n_inventaire" placeholder="N° inventaire">
-                  </div>
-                </div>
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label>Code Guichet</label>
-                    <input type="text" class="form-control" formControlName="code_guichet" placeholder="Code Guichet">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Direction</label>
-                    <input type="text" class="form-control" formControlName="direction" placeholder="Direction">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Département</label>
-                    <input type="text" class="form-control" formControlName="departement" placeholder="Département">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Service</label>
-                    <input type="text" class="form-control" formControlName="service" placeholder="Service">
-                  </div>
-                </div>
-              </div>
-
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Libelle Famille</label>
-                    <input type="text" class="form-control" formControlName="libelle_famille" placeholder="Libelle Famille">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Sous Libelle Famille</label>
-                    <input type="text" class="form-control" formControlName="sous_libelle_famille" placeholder="Sous Libelle Famille">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Famille</label>
-                    <input type="text" class="form-control" formControlName="famille" placeholder="Famille">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Sous Famille</label>
-                    <input type="text" class="form-control" formControlName="sous_famille" placeholder="Sous Famille">
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Libellé Agence</label>
-                    <input type="text" class="form-control" formControlName="libelle_agence" placeholder="Libellé Agence">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Libellé Localisation</label>
-                    <input type="text" class="form-control" formControlName="libelle_localisation" placeholder="Libellé Localisation">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Code Localisation</label>
-                    <input type="text" class="form-control" formControlName="code_localisation" placeholder="Code Localisation">
-                  </div>
-                </div>
-                <div class="col-md-3">
-                  <div class="form-group">
-                    <label>Niveau</label>
-                    <input type="text" class="form-control" formControlName="niveau" placeholder="Niveau">
-                  </div>
-                </div>
-              </div>
-
-
-              <div class="row">
-                <div class="update ml-auto mr-auto">
-                  <button type="submit" class="btn btn-primary btn-round">
-                    <span *ngIf="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    CREER
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-  </div>
-</div>
 </div>

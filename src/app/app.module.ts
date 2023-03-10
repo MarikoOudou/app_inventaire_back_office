@@ -16,6 +16,7 @@ import { SweetAlert2Module } from '@sweetalert2/ngx-sweetalert2';
 import { HttpClientModule } from "@angular/common/http";
 import { ReactiveFormsModule } from "@angular/forms";
 import { UsersComponent } from './pages/users/users.component';
+import { TableCustomComponent } from './shared/table-custom/table-custom.component';
 
 
 @NgModule({

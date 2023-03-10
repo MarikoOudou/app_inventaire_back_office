@@ -21,6 +21,7 @@ import { InventaireComponent } from 'app/pages/inventaire/inventaire.component';
 import { ListMeubleComponent } from 'app/pages/list-meuble/list-meuble.component';
 import { PeriodeInventaireComponent } from 'app/pages/periode-inventaire/periode-inventaire.component';
 import { UsersComponent } from 'app/pages/users/users.component';
+import { TableCustomComponent } from 'app/shared/table-custom/table-custom.component';
 
 @NgModule({
   imports: [
@@ -44,7 +45,9 @@ import { UsersComponent } from 'app/pages/users/users.component';
     InventaireComponent,
     ListMeubleComponent,
     PeriodeInventaireComponent,
-    UsersComponent  
+    UsersComponent ,
+    TableCustomComponent,
+
   ]
 })
 

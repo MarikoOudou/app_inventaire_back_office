@@ -8,7 +8,6 @@ import { Columns, DefaultConfig, STYLE, THEME } from 'ngx-easy-table';
 import { Config } from 'protractor';
 import Swal from 'sweetalert2';
 import * as xlsx from 'xlsx';
-import { IMMOBILIER } from '../import-excel-file/import-excel-file.component';
 
 @Component({
   templateUrl: './inventaire.component.html',
@@ -18,6 +17,12 @@ export class InventaireComponent implements OnInit {
 
   @ViewChild('n_inventaireTp', { static: true }) n_inventaireTp: TemplateRef<any>;
   @ViewChild('n_inventaire') n_inventaire: ElementRef<any>;
+
+  @ViewChild('libelle_immoTp', { static: true }) libelle_immoTp: TemplateRef<any>;
+  @ViewChild('libelle_immo') libelle_immo: ElementRef<any>;
+
+  @ViewChild('libelle_complementaireTp', { static: true }) libelle_complementaireTp: TemplateRef<any>;
+  @ViewChild('libelle_complementaire') libelle_complementaire: ElementRef<any>;
 
   @ViewChild('n_serieTp', { static: true }) n_serieTp: TemplateRef<any>;
   @ViewChild('n_serie') n_serie: ElementRef<any>;
@@ -76,7 +81,7 @@ export class InventaireComponent implements OnInit {
   public configuration: Config;
   public columns: Columns[]
 
-  public data: Inventaire[]= [];
+  public data: any[] = [];
 
   file: any;
   arrayBuffer: any | ArrayBuffer;
@@ -110,8 +115,8 @@ export class InventaireComponent implements OnInit {
   ngOnInit(): void {
     this.configuration = { ...DefaultConfig };
     this.configuration.horizontalScroll = true;
-    this.configuration.tableLayout =  {
-      style: STYLE.TINY ,
+    this.configuration.tableLayout = {
+      style: STYLE.TINY,
       theme: THEME.LIGHT,
       borderless: true,
       hover: true,
@@ -121,14 +126,19 @@ export class InventaireComponent implements OnInit {
     this.configuration.searchEnabled = true;
     // ... etc.
     this.columns = [
-      { key: 'action',              title: 'ACTIONS' ,              cellTemplate: this.actionTpl, searchEnabled: false },
+      { key: 'action', title: 'ACTIONS', cellTemplate: this.actionTpl, searchEnabled: false },
 
-      { key: 'n_inventaire',        title: 'N° INVENTAIRE',         cellTemplate: this.n_inventaireTp},
+      { key: 'n_inventaire',            title: 'N° INVENTAIRE', cellTemplate: this.n_inventaireTp },
+      { key: 'libelle_immo',            title: 'LIBELLE IMMO', cellTemplate: this.libelle_immoTp },
+      { key: 'libelle_localisation',    title: 'LIBELLE LOCALISATION', cellTemplate: this.libelle_localisationTp },
+      { key: 'code_localisation',       title: 'CODE LOCALISATION', cellTemplate: this.code_localisationTp },
+      { key: 'libelle_complementaire',  title: 'LIBELLE COMPLEMENTAIRE', cellTemplate: this.libelle_complementaireTp },
+
       // { key: 'n_serie',             title: 'N° SERIE',              cellTemplate: this.n_serieTp},
-      { key: 'etat',                title: 'ETAT',                  cellTemplate: this.etatTp},
-      { key: 'nom_agent',           title: 'NOM DE L\'AGENT',       cellTemplate: this.nom_agentTp},
-      { key: 'observations',        title: 'OBSERVATIONS',          cellTemplate: this.observationsTp},
-      { key: 'date_inventaire',     title: 'DATE INVENTAIRE',       cellTemplate: this.date_inventaireTp},
+      { key: 'etat', title: 'ETAT', cellTemplate: this.etatTp },
+      { key: 'nom_agent', title: 'NOM DE L\'AGENT', cellTemplate: this.nom_agentTp },
+      { key: 'observations', title: 'OBSERVATIONS', cellTemplate: this.observationsTp },
+      { key: 'date_inventaire', title: 'DATE INVENTAIRE', cellTemplate: this.date_inventaireTp },
 
 
       // { key: 'code_guichet',         title: 'CODE GUICHET',         cellTemplate: this.code_guichetTp},
@@ -160,14 +170,14 @@ export class InventaireComponent implements OnInit {
         next: (result: any) => {
 
           console.log('Data: ', result);
-              Swal.fire({
-                title: 'Success',
-                text: result?.message || '',
-                icon: 'success',
-                confirmButtonText: 'Retour'
-              })
+          Swal.fire({
+            title: 'Success',
+            text: result?.message || '',
+            icon: 'success',
+            confirmButtonText: 'Retour'
+          })
 
-              this.init()
+          this.init()
 
           this.form.reset();
           this.loader = false;
@@ -188,15 +198,17 @@ export class InventaireComponent implements OnInit {
   }
 
   init() {
-
     this.getAllPeriodeInventaire()
     this.getAllInventaire()
-
   }
 
   exportexcel(): void {
     /* pass here the table id */
     // let element = document.getElementById('excel-table');
+    if (this.data.length == 0) {
+      return;
+    }
+
     const ws: xlsx.WorkSheet = xlsx.utils.json_to_sheet(this.fieldFileExcel(this.data));
 
     /* generate workbook and add the worksheet */
@@ -209,33 +221,36 @@ export class InventaireComponent implements OnInit {
   }
 
 
-  fieldFileExcel(data: Inventaire[]) {
+  fieldFileExcel(data: any[]) {
+
     return data.map(
       (element) => {
         return {
 
-          'CODE GUICHET': element?.codification?.code_guichet,
-          'FAMILLE ': element?.codification?.famille,
-          'SOUS FAMILLE': element?.codification?.sous_famille,
-          'LIBELLE FAMILLE': element?.codification?.libelle_famille,
-          'SOUS LIBELLE FAMILLE': element?.codification?.sous_libelle_famille,
-          'libelle agence ': element?.codification?.libelle_agence,
-          'code localisation': element?.codification?.code_localisation,
-          'NIVEAU': element?.codification?.niveau,
-          'libelle localisation': element?.codification?.libelle_localisation,
-          'DIRECTION': element?.codification?.direction,
-          'DEPARTEMENT': element?.codification?.departement,
-          'SERVICE': element?.codification?.service,
+          'N° INVENTAIRE'                 : element?.codification?.n_inventaire,
+          'LIBELLE IMMO'                  : element?.codification?.libelle_immo,
+          'LIBELLE COMPLEMENTAIRE'        : element?.codification?.libelle_complementaire,
+          'LIBELLE LOCALISATION'          : element?.libelle_localisation,
+          'CODE LOCALISATION'             : element?.code_localisation,
 
-          "ETAT": element.etat,
-          "NOM DE L'AGENT": element?.nom_agent,
-          "OBSERVATION": element?.observations,
+          'FAMILLE'             : element?.codification?.famille,
+          'SOUS FAMILLE'        : element?.codification?.sous_famille,
+          'LIBELLE FAMILLE'     : element?.codification?.libelle_famille,
+          'SOUS LIBELLE FAMILLE': element?.codification?.sous_libelle_famille,
+          'LIBELLE AGENCE '     : element?.codification?.libelle_agence,
+          'NIVEAU'              : element?.codification?.niveau,
+          'DIRECTION'           : element?.codification?.direction,
+          'DEPARTEMENT'         : element?.codification?.departement,
+          'SERVICE'             : element?.codification?.service,
+          "ETAT"                : element.etat,
+          "NOM DE L'AGENT"      : element?.nom_agent,
+          "OBSERVATION"         : element?.observations,
         }
       }
     )
   }
 
-  getAllPeriodeInventaire () {
+  getAllPeriodeInventaire() {
     this.periodeInventaireService.getAllPeriodeInventaire().subscribe(
       {
         next: (result: any) => {
@@ -268,7 +283,7 @@ export class InventaireComponent implements OnInit {
     )
   }
 
-  getAllInventaire () {
+  getAllInventaire() {
     this.configuration.isLoading = true;
 
     this.inventaireService.getAllInventaire().subscribe(
@@ -277,27 +292,26 @@ export class InventaireComponent implements OnInit {
 
           console.log('inventaireService: ', result);
 
-if (result.status) {
-  Swal.fire({
-    title: 'Success',
-    text: result?.message || '',
-    icon: 'success',
-    confirmButtonText: 'Retour'
-  })
+          if (result.status) {
+            Swal.fire({
+              title: 'Success',
+              text: result?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
 
-  this.data = result.data;
+            this.data = result.data.filter(x => x.periode_inventtaire.isActive == true);
 
-  this.data = this.data.sort((a, b) =>   Date.parse(b.date_inventaire)  - Date.parse( a.date_inventaire))
-} else {
-  Swal.fire({
-    title: 'Error',
-    text: result?.message || '',
-    icon: 'error',
-    confirmButtonText: 'Retour'
-  })
-}
+            this.data = this.data.sort((a, b) => Date.parse(b.date_inventaire) - Date.parse(a.date_inventaire))
+          } else {
+            Swal.fire({
+              title: 'Error',
+              text: result?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
 
-          this.form.reset();
           this.loader = false;
           this.configuration.isLoading = false;
 
@@ -318,7 +332,7 @@ if (result.status) {
   }
 
 
-  getAllByPeriodeInventaire (id_periode: number) {
+  getAllByPeriodeInventaire(id_periode: number) {
     console.log(id_periode)
     this.configuration.isLoading = true;
     this.loader = true;
@@ -328,15 +342,25 @@ if (result.status) {
         next: (result: any) => {
 
           console.log('inventaireService: ', result);
-          Swal.fire({
-            title: 'Success',
-            text: result?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
 
-          this.data = result.data;
-          this.form.reset();
+          if (result.status) {
+            Swal.fire({
+              title: 'Success',
+              text: result?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
+
+            this.data = result.data;
+          } else {
+            Swal.fire({
+              title: 'Erreur',
+              text: result?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+          }
+
           this.loader = false;
           this.configuration.isLoading = false;
 
@@ -364,7 +388,7 @@ if (result.status) {
 
     // console.log('data')
 
-    var immobilier: IMMOBILIER;
+    var immobilier: any;
 
     this.fileReader(this.file, immobilier);
   }
@@ -392,7 +416,7 @@ if (result.status) {
       /**
        * Call matching function
        */
-    console.log(this.worksheet)
+      console.log(this.worksheet)
 
       this.matchingCell(this.worksheet, [], line);
     };
@@ -404,7 +428,7 @@ if (result.status) {
 
     for (let i = 0; i < worksheet.length; i++) {
       const worksheetLine = worksheet[i];
-      const updatedLine: IMMOBILIER = {
+      const updatedLine: any = {
         code_guichet: worksheetLine['CODE GUICHET'],
         famille: worksheetLine['FAMILLE '],
         sous_famille: worksheetLine['SOUS FAMILLE'],
@@ -419,7 +443,7 @@ if (result.status) {
         service: worksheetLine['SERVICE'],
       };
 
-      line = {...line, ...updatedLine};
+      line = { ...line, ...updatedLine };
       monTab.value.push(line);
     }
     this.data = monTab.value;
@@ -434,43 +458,16 @@ if (result.status) {
   }
 
   update(): void {
-    // this.data = [
-    //   ...this.data.map((obj, index) => {
-    //     if (index === this.editRow) {
-    //       return {
-    //         code_guichet: this.code_guichet.nativeElement.value,
-    //         service: this.service.nativeElement.value,
-    //         sous_famille: this.sous_famille.nativeElement.value,
-    //         famille: this.famille.nativeElement.value,
-    //         libelle_famille: this.libelle_famille.nativeElement.value,
-    //         sous_libelle_famille: this.sous_libelle_famille.nativeElement.value,
-    //         code_localisation: this.code_localisation.nativeElement.value,
-    //         direction: this.direction.nativeElement.value,
-    //         departement: this.departement.nativeElement.value,
-    //         libelle_agence: this.libelle_agence.nativeElement.value,
-    //         niveau: this.niveau.nativeElement.value,
-    //         libelle_localisation: this.libelle_localisation.nativeElement.value,
-    //       } as Inventaire;
-    //     }
-    //     return obj;
-    //   }),
-    // ] as Inventaire[];
-    let resul: Inventaire = this.data.find((obj, index) => index === this.editRow);
+
+    let resul: any = this.data.find((obj, index) => index === this.editRow);
     this.configuration.isLoading = true;
     this.editRow = -1;
 
-    resul.etat= this.etat.nativeElement.value
-    resul.nom_agent= this.nom_agent.nativeElement.value
-    resul.observations= this.observations.nativeElement.value
-    // resul.  famille= this.famille.nativeElement.value,
-    // resul.  libelle_famille= this.libelle_famille.nativeElement.value,
-    // resul.  sous_libelle_famille= this.sous_libelle_famille.nativeElement.value,
-    // resul.  code_localisation= this.code_localisation.nativeElement.value,
-    // resul.  direction= this.direction.nativeElement.value,
-    // resul.  departement= this.departement.nativeElement.value,
-    // resul.  libelle_agence= this.libelle_agence.nativeElement.value,
-    // resul.niveau= this.niveau.nativeElement.value,
-    //         resul.  libelle_localisation= this.libelle_localisation.nativeElement.value,
+    resul.etat                 = this.etat.nativeElement.value
+    resul.nom_agent            = this.nom_agent.nativeElement.value
+    resul.observations         = this.observations.nativeElement.value
+    resul.libelle_localisation = this.libelle_localisation.nativeElement.value
+    resul.code_localisation    = this.code_localisation.nativeElement.value
 
 
     this.inventaireService.updateInventaire(resul.id, resul).subscribe(
@@ -479,12 +476,25 @@ if (result.status) {
           this.configuration.isLoading = false;
           console.log('Data : ', data);
 
-          Swal.fire({
-            title: 'Success',
-            // text: data?.message || '',
-            icon: 'success',
-            confirmButtonText: 'Retour'
-          })
+          if (data.status) {
+            this.init()
+            Swal.fire({
+              title: 'Success',
+              text: data?.message || '',
+              icon: 'success',
+              confirmButtonText: 'Retour'
+            })
+
+          } else {
+            Swal.fire({
+              title: 'Erreur',
+              text: data?.message || '',
+              icon: 'error',
+              confirmButtonText: 'Retour'
+            })
+
+          }
+
 
         },
         error: (error) => {

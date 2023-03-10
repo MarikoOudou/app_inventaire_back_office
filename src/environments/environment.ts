@@ -5,7 +5,7 @@
 
 export const environment = {
   production: false,
-  url_api: "http://127.0.0.1:8080/api/"
+  // url_api: "http://127.0.0.1:8000/api/"
   //http://gest-imm.ci/laravel/public/api/users
-  // url_api: "https://gest-imm.ci/laravel/public/api/"
+  url_api: "https://gest-imm.ci/laravel/public/api/"
 };

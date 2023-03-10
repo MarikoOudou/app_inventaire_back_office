@@ -7,27 +7,21 @@
 
       <div>
         <form [formGroup]="form" (ngSubmit)="sendData()">
-        
+
             <input type="file" formControlName="file_excel" accept=".xlsx" class="file-input" (change)="getFile($event)"
             #fileUpload>
 
           <button mat-mini-fab color="primary" type="button" class="upload-btn btn btn-primary" (click)="fileUpload.click()">
             Importation
           </button>
-          
+
 
 
           <button type="submit" class="btn btn-secondary" [disabled]="data.length == 0">
             <span *ngIf="loader" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-            Save Data
+            ENREGISTRER LE FICHIER IMPORTER
           </button>
 
-          <!-- <button type="submit" class="btn btn-secondary" [disabled]="data.length == 0">
-            <div class="spinner-border text-primary" role="status">
-              <span class="sr-only">Loading...</span>
-            </div>
-            Save Data
-          </button> -->
         </form>
 
       </div>
@@ -39,119 +33,16 @@
 
     <div class="card">
       <div class="card-header">
-        <h5 class="card-title">Liste Des Meubles</h5>
-        <!-- <p class="card-category">Handcrafted by our friends from
-          <a href="https://nucleoapp.com/?ref=1712">NucleoApp</a>
-        </p> -->
+        <h5 class="card-title">
+          Liste des immobilisations
+        </h5>
       </div>
       <div class="card-body">
         <div class="row">
-          <div  class="col-md-12">
 
-            <ngx-table [configuration]="configuration" [data]="data" [columns]="columns"></ngx-table>
-            
-            <ng-template #n_inventaireTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.n_inventaire }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #n_inventaire class="form-label" [value]="row.n_inventaire" />
-              </div>
-            </ng-template>
+          <table-custom [data]="data" (updateData)="eventLister($event)"></table-custom>
 
-            <ng-template #code_guichetTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.code_guichet }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #code_guichet class="form-label" [value]="row.code_guichet" />
-              </div>
-            </ng-template>
 
-            <ng-template #departementTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.departement }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #departement class="form-label" [value]="row.departement" />
-              </div>
-            </ng-template>
-
-            <ng-template #directionTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.direction }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #direction class="form-label" [value]="row.direction" />
-              </div>
-            </ng-template>
-
-            <ng-template #familleTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.famille }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #famille class="form-label" [value]="row.famille" />
-              </div>
-            </ng-template>
-
-            <ng-template #libelle_familleTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.libelle_famille }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #libelle_famille class="form-label" [value]="row.libelle_famille" />
-              </div>
-            </ng-template>
-
-            <ng-template #sous_libelle_familleTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.sous_libelle_famille }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #sous_libelle_famille class="form-label" [value]="row.sous_libelle_famille" />
-              </div>
-            </ng-template>
-
-            <ng-template #niveauTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.niveau }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #niveau class="form-label" [value]="row.niveau" />
-              </div>
-            </ng-template>
-
-            <ng-template #serviceTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.service }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #service class="form-label" [value]="row.service" />
-              </div>
-            </ng-template>
-
-            <ng-template #sous_familleTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.sous_famille }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #sous_famille class="form-label" [value]="row.sous_famille" />
-              </div>
-            </ng-template>
-
-            <ng-template #code_localisationTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.codeLocalisation }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #code_localisation class="form-label" [value]="row.codeLocalisation" />
-              </div>
-            </ng-template>
-
-            <ng-template #libelle_agenceTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.libelle_agence }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #libelle_agence class="form-label" [value]="row.libelle_agence" />
-              </div>
-            </ng-template>
-
-            <ng-template #libelle_localisationTp let-row let-rowIndex="rowIndex">
-              <div class="" *ngIf="editRow !== rowIndex">{{ row.libelle_localisation }}</div>
-              <div *ngIf="editRow === rowIndex">
-                <input type="text" #libelle_localisation class="form-label" [value]="row.libelle_localisation" />
-              </div>
-            </ng-template>
-
-            <ng-template #actionTpl let-row let-rowIndex="rowIndex">
-              <div *ngIf="editRow !== rowIndex" class="btn btn-primary btn-circle" (click)="edit(rowIndex)">
-                <span class="nc-icon nc-ruler-pencil "></span>
-              </div>
-              <div *ngIf="editRow === rowIndex" class="btn btn-secondary btn-circle" (click)="update()">
-                <span class="nc-icon nc-check-2"></span>
-                
-              </div>
-            </ng-template>
-            
-          </div>
         </div>
       </div>
     </div>

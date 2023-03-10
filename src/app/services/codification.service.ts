@@ -28,15 +28,15 @@ export class CodificationService {
     return this.http.get(this.url_base + 'codifications/n_inventaire/' + n_inventaire)
   }
 
-  createCodification(arg0: Codification) {
+  createCodification(arg0: any) {
     return this.http.post(this.url_base + 'codification', arg0, {})
   }
 
-  createsCodification(data: Codification[]) {
+  createsCodification(data: any[]) {
     return this.http.post(this.url_base + 'codifications', data, {})
   }
 
-  updateCodification(id_codification: number, resul: Codification) {
+  updateCodification(id_codification: number, resul: any) {
 
     return this.http.request('put', this.url_base + 'codifications/' + id_codification, {
       body: resul,
