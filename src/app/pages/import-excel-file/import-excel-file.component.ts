@@ -76,7 +76,7 @@ export class ImportExcelFileComponent implements OnInit {
         code_localisation: worksheetLine['CODE LOCALISATION'],
         n_serie: worksheetLine['N° SERIE'],
         libelle_localisation: worksheetLine['libelle localisation'] || worksheetLine['LIBELLE LOCALISATION'],
-        libelle_complementaire: worksheetLine['libelle complementaire'],
+        libelle_complementaire: worksheetLine['libelle complementaire'] || worksheetLine['LIBELLE COMPLEMENTAIRE'],
 
         code_guichet: worksheetLine['CODE GUICHET'], //
         famille: worksheetLine['FAMILLE '] || worksheetLine['Famille'] || worksheetLine['FAMILLE'] || worksheetLine['famille'],

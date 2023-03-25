@@ -183,6 +183,8 @@ export class ListMeubleComponent implements OnInit {
   getAllCodification() {
     // this.configuration.isLoading = true;
 
+    Swal.showLoading();
+
     this.codificationService.getAllCodification().subscribe(
       {
         next: (result: any) => {

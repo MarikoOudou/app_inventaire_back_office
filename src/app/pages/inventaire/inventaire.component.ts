@@ -251,6 +251,7 @@ export class InventaireComponent implements OnInit {
   }
 
   getAllPeriodeInventaire() {
+
     this.periodeInventaireService.getAllPeriodeInventaire().subscribe(
       {
         next: (result: any) => {
@@ -284,7 +285,9 @@ export class InventaireComponent implements OnInit {
   }
 
   getAllInventaire() {
-    this.configuration.isLoading = true;
+    Swal.showLoading();
+
+    // this.configuration.isLoading = true;
 
     this.inventaireService.getAllInventaire().subscribe(
       {
