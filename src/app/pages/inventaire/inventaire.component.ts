@@ -199,7 +199,7 @@ export class InventaireComponent implements OnInit {
 
   init() {
     this.getAllPeriodeInventaire()
-    this.getAllInventaire()
+    // this.getAllInventaire()
   }
 
   exportexcel(): void {
